@@ -21,6 +21,8 @@ permissions have been validated on real hardware.
 
 ## Releases
 
+- **Beta 05 / 0.1.4:** Add an input configuration wizard for selecting each
+  detected input's Home Assistant area and sensor type.
 - **Beta 04 / 0.1.3:** Automatically expose inputs named PIR, motion, or
   movement as Home Assistant movement sensors.
 - **Beta 03 / 0.1.2:** Show input states as `Sealed`/`Unsealed` and remove the

@@ -33,6 +33,14 @@
           "area_count": "Number of areas",
           "relay_count": "Number of relays"
         }
+      },
+      "input": {
+        "title": "Configure detected input",
+        "description": "Input {position} of {total}: **{input_name}** (panel input {input_number}, currently {input_state}).",
+        "data": {
+          "input_type": "Sensor type",
+          "input_area": "Home Assistant area"
+        }
       }
     }
   }

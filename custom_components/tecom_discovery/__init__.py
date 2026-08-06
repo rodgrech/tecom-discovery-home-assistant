@@ -13,11 +13,12 @@ from .const import (
     CONF_INPUT_COUNT,
     DEFAULT_INPUT_COUNT,
     DOMAIN,
+    INPUT_TYPE_SEALED,
     KIND_INPUT,
     PLATFORMS,
 )
 from .coordinator import DiscoveryCoordinator
-from .entity import is_motion_input
+from .entity import configured_input_type
 
 type DiscoveryConfigEntry = ConfigEntry[DiscoveryCoordinator]
 
@@ -67,9 +68,24 @@ def _remove_legacy_input_binary_sensors(
         if entity_id is not None:
             registry.async_remove(entity_id)
     for item in entry.runtime_data.data.inputs:
-        if not is_motion_input(item):
-            continue
         unique_id = f"{entry.entry_id}_{KIND_INPUT}_{item.number}"
-        entity_id = registry.async_get_entity_id("sensor", DOMAIN, unique_id)
+        legacy_motion_id = (
+            f"{entry.entry_id}_{KIND_INPUT}_motion_{item.number}"
+        )
+        entity_id = registry.async_get_entity_id(
+            "binary_sensor", DOMAIN, legacy_motion_id
+        )
+        if entity_id is not None:
+            registry.async_remove(entity_id)
+
+        if configured_input_type(entry.runtime_data, item) == INPUT_TYPE_SEALED:
+            binary_unique_id = (
+                f"{entry.entry_id}_{KIND_INPUT}_binary_{item.number}"
+            )
+            entity_id = registry.async_get_entity_id(
+                "binary_sensor", DOMAIN, binary_unique_id
+            )
+        else:
+            entity_id = registry.async_get_entity_id("sensor", DOMAIN, unique_id)
         if entity_id is not None:
             registry.async_remove(entity_id)

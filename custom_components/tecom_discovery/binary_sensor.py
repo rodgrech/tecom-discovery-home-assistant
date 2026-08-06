@@ -10,9 +10,20 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import KIND_INPUT, KIND_RELAY
+from .const import (
+    INPUT_TYPE_DOOR,
+    INPUT_TYPE_MOISTURE,
+    INPUT_TYPE_MOTION,
+    INPUT_TYPE_OCCUPANCY,
+    INPUT_TYPE_SEALED,
+    INPUT_TYPE_SMOKE,
+    INPUT_TYPE_VIBRATION,
+    INPUT_TYPE_WINDOW,
+    KIND_INPUT,
+    KIND_RELAY,
+)
 from .coordinator import DiscoveryCoordinator
-from .entity import DiscoveryEntity, is_motion_input
+from .entity import DiscoveryEntity, configured_input_type
 
 
 async def async_setup_entry(
@@ -28,9 +39,9 @@ async def async_setup_entry(
         for item in coordinator.data.relays
     ]
     entities.extend(
-        DiscoveryMotionSensor(coordinator, item)
+        DiscoveryInputBinarySensor(coordinator, item)
         for item in coordinator.data.inputs
-        if is_motion_input(item)
+        if configured_input_type(coordinator, item) != INPUT_TYPE_SEALED
     )
     async_add_entities(entities)
 
@@ -50,16 +61,32 @@ class DiscoveryBinarySensor(DiscoveryEntity, BinarySensorEntity):
         return state.active if state else None
 
 
-class DiscoveryMotionSensor(DiscoveryEntity, BinarySensorEntity):
-    """A Discovery PIR or movement input."""
-
-    _attr_device_class = BinarySensorDeviceClass.MOTION
+class DiscoveryInputBinarySensor(DiscoveryEntity, BinarySensorEntity):
+    """A typed Discovery binary input."""
 
     def __init__(self, coordinator: DiscoveryCoordinator, entity) -> None:
         super().__init__(coordinator, entity)
         self._attr_unique_id = (
-            f"{coordinator.entry.entry_id}_{KIND_INPUT}_motion_{entity.number}"
+            f"{coordinator.entry.entry_id}_{KIND_INPUT}_binary_{entity.number}"
         )
+
+    @property
+    def device_class(self) -> BinarySensorDeviceClass:
+        state = self.discovery_state
+        input_type = (
+            configured_input_type(self.coordinator, state)
+            if state is not None
+            else INPUT_TYPE_MOTION
+        )
+        return {
+            INPUT_TYPE_MOTION: BinarySensorDeviceClass.MOTION,
+            INPUT_TYPE_DOOR: BinarySensorDeviceClass.DOOR,
+            INPUT_TYPE_WINDOW: BinarySensorDeviceClass.WINDOW,
+            INPUT_TYPE_OCCUPANCY: BinarySensorDeviceClass.OCCUPANCY,
+            INPUT_TYPE_SMOKE: BinarySensorDeviceClass.SMOKE,
+            INPUT_TYPE_MOISTURE: BinarySensorDeviceClass.MOISTURE,
+            INPUT_TYPE_VIBRATION: BinarySensorDeviceClass.VIBRATION,
+        }.get(input_type, BinarySensorDeviceClass.SAFETY)
 
     @property
     def is_on(self) -> bool | None:

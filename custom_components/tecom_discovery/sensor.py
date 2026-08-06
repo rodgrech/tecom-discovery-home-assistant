@@ -9,9 +9,9 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, INPUT_TYPE_SEALED
 from .coordinator import DiscoveryCoordinator
-from .entity import DiscoveryEntity, is_motion_input
+from .entity import DiscoveryEntity, configured_input_type
 
 
 async def async_setup_entry(
@@ -28,7 +28,7 @@ async def async_setup_entry(
             *(
                 DiscoveryInputSensor(coordinator, item)
                 for item in coordinator.data.inputs
-                if not is_motion_input(item)
+                if configured_input_type(coordinator, item) == INPUT_TYPE_SEALED
             ),
         ]
     )
