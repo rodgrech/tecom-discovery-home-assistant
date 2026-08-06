@@ -11,6 +11,7 @@ CONF_RELAY_COUNT = "relay_count"
 CONF_INPUT_MAPPINGS = "input_mappings"
 CONF_INPUT_TYPE = "input_type"
 CONF_INPUT_AREA = "input_area"
+CONF_CONTROL_CODE = "control_code"
 
 DEFAULT_INPUT_COUNT = 16
 DEFAULT_AREA_COUNT = 8

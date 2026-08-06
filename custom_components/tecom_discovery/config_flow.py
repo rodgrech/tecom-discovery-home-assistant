@@ -15,6 +15,9 @@ from homeassistant.helpers.selector import (
     SelectOptionDict,
     SelectSelector,
     SelectSelectorConfig,
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
 )
 
 from .api import (
@@ -25,6 +28,7 @@ from .api import (
 )
 from .const import (
     CONF_AREA_COUNT,
+    CONF_CONTROL_CODE,
     CONF_INPUT_AREA,
     CONF_INPUT_COUNT,
     CONF_INPUT_MAPPINGS,
@@ -154,6 +158,17 @@ class DiscoveryOptionsFlow(OptionsFlow):
                         CONF_RELAY_COUNT,
                         default=current.get(CONF_RELAY_COUNT, DEFAULT_RELAY_COUNT),
                     ): vol.All(vol.Coerce(int), vol.Range(min=0, max=512)),
+                    vol.Optional(
+                        CONF_CONTROL_CODE,
+                        description={
+                            "suggested_value": current.get(CONF_CONTROL_CODE, "")
+                        },
+                    ): TextSelector(
+                        TextSelectorConfig(
+                            type=TextSelectorType.PASSWORD,
+                            autocomplete="new-password",
+                        )
+                    ),
                 }
             ),
         )

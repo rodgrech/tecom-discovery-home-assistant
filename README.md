@@ -1,7 +1,7 @@
 # Tecom Discovery for Home Assistant
 
-Local, read-only Home Assistant integration for an Aritech/Tecom Discovery
-panel using the panel's onboard HTTPS API.
+Local Home Assistant integration for an Aritech/Tecom Discovery panel using
+the panel's onboard HTTPS API.
 
 ## Current status
 
@@ -13,14 +13,17 @@ This first release supports:
 - other input states as sensors using the panel's `Sealed`/`Unsealed`
   terminology
 - relay states as read-only binary sensors
-- area states as read-only alarm control panels
+- area states as alarm control panels with optional keypad-protected control
 - local polling every 10 seconds
 
-Control commands are deliberately not included until their behavior and
-permissions have been validated on real hardware.
+Area arm/disarm commands require a Home Assistant keypad code configured in
+the integration options. The Discovery panel authorizes the underlying command
+through the dedicated service account and its assigned alarm group.
 
 ## Releases
 
+- **Beta 06 / 0.1.5:** Add keypad-protected full-arm, stay-arm, and disarm
+  controls using the Discovery panel's native area action API.
 - **Beta 05 / 0.1.4:** Add an input configuration wizard for selecting each
   detected input's Home Assistant area and sensor type.
 - **Beta 04 / 0.1.3:** Automatically expose inputs named PIR, motion, or

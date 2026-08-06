@@ -11,7 +11,8 @@
           "verify_ssl": "Verify HTTPS certificate",
           "input_count": "Number of inputs",
           "area_count": "Number of areas",
-          "relay_count": "Number of relays"
+          "relay_count": "Number of relays",
+          "control_code": "Home Assistant keypad code"
         }
       }
     },

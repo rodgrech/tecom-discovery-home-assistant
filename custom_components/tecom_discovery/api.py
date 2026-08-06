@@ -109,6 +109,17 @@ class DiscoveryApi:
             states.extend(normalize_states(response, kind, batch))
         return states
 
+    async def async_set_area_action(self, area: int, action: int) -> None:
+        """Set an area state using the panel's native action codes."""
+
+        response = await self.async_post(
+            "setAreaAction", [{"action": action, "entity": area}]
+        )
+        data = _unwrap(response)
+        result = data[0] if isinstance(data, list) and data else data
+        if not isinstance(result, dict) or result.get("status") is not True:
+            raise DiscoveryApiError(_error_message(response, 200))
+
     async def async_post(self, endpoint: str, payload: Any) -> Any:
         """Make an authenticated API request, refreshing once on HTTP 401."""
 
