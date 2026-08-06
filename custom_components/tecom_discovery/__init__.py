@@ -6,9 +6,16 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME, CONF_VERIFY_SSL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers import entity_registry as er
 
 from .api import DiscoveryApi
-from .const import PLATFORMS
+from .const import (
+    CONF_INPUT_COUNT,
+    DEFAULT_INPUT_COUNT,
+    DOMAIN,
+    KIND_INPUT,
+    PLATFORMS,
+)
 from .coordinator import DiscoveryCoordinator
 
 type DiscoveryConfigEntry = ConfigEntry[DiscoveryCoordinator]
@@ -27,6 +34,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: DiscoveryConfigEntry) ->
     coordinator = DiscoveryCoordinator(hass, entry, api)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
+    _remove_legacy_input_binary_sensors(hass, entry)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_async_reload_entry))
     return True
@@ -42,3 +50,18 @@ async def _async_reload_entry(
     hass: HomeAssistant, entry: DiscoveryConfigEntry
 ) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
+
+
+def _remove_legacy_input_binary_sensors(
+    hass: HomeAssistant, entry: DiscoveryConfigEntry
+) -> None:
+    """Remove Beta 01/02 input entities that used Safe/Unsafe state labels."""
+
+    registry = er.async_get(hass)
+    options = {**entry.data, **entry.options}
+    input_count = int(options.get(CONF_INPUT_COUNT, DEFAULT_INPUT_COUNT))
+    for number in range(1, input_count + 1):
+        unique_id = f"{entry.entry_id}_{KIND_INPUT}_{number}"
+        entity_id = registry.async_get_entity_id("binary_sensor", DOMAIN, unique_id)
+        if entity_id is not None:
+            registry.async_remove(entity_id)

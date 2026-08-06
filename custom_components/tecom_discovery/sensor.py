@@ -11,6 +11,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import DiscoveryCoordinator
+from .entity import DiscoveryEntity
 
 
 async def async_setup_entry(
@@ -21,7 +22,32 @@ async def async_setup_entry(
     """Set up panel information sensor."""
 
     coordinator: DiscoveryCoordinator = entry.runtime_data
-    async_add_entities([DiscoveryPanelInfoSensor(coordinator)])
+    async_add_entities(
+        [
+            DiscoveryPanelInfoSensor(coordinator),
+            *(DiscoveryInputSensor(coordinator, item) for item in coordinator.data.inputs),
+        ]
+    )
+
+
+class DiscoveryInputSensor(DiscoveryEntity, SensorEntity):
+    """A Discovery input with the panel's Sealed/Unsealed terminology."""
+
+    _attr_icon = "mdi:shield-check"
+
+    @property
+    def native_value(self) -> str | None:
+        state = self.discovery_state
+        if state is None or state.state == "unknown":
+            return None
+        return state.state.replace("_", " ").title()
+
+    @property
+    def icon(self) -> str:
+        state = self.discovery_state
+        if state and state.state == "unsealed":
+            return "mdi:shield-alert"
+        return "mdi:shield-check"
 
 
 class DiscoveryPanelInfoSensor(CoordinatorEntity[DiscoveryCoordinator], SensorEntity):

@@ -9,7 +9,7 @@ This first release supports:
 
 - Discovery email/password authentication and bearer-token renewal
 - panel firmware/API information
-- input states as binary sensors
+- input states as sensors using the panel's `Sealed`/`Unsealed` terminology
 - relay states as read-only binary sensors
 - area states as read-only alarm control panels
 - local polling every 10 seconds
@@ -19,6 +19,8 @@ permissions have been validated on real hardware.
 
 ## Releases
 
+- **Beta 03 / 0.1.2:** Show input states as `Sealed`/`Unsealed` and remove the
+  superseded Safe/Unsafe binary-sensor entities.
 - **Beta 02 / 0.1.1:** Correctly map `disarmed` areas before checking armed
   state names.
 - **Beta 01 / 0.1.0:** Initial read-only release.
