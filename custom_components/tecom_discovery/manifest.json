@@ -1,0 +1,11 @@
+{
+  "domain": "tecom_discovery",
+  "name": "Tecom Discovery",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/rodgrech/tecom-discovery-home-assistant",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "loggers": ["custom_components.tecom_discovery"],
+  "version": "0.1.0"
+}

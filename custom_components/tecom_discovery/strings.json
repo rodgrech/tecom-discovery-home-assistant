@@ -1,0 +1,39 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Tecom Discovery",
+        "description": "Use a dedicated, low-permission panel account. Entity counts can be adjusted later.",
+        "data": {
+          "host": "Panel address",
+          "username": "Email",
+          "password": "Password",
+          "verify_ssl": "Verify HTTPS certificate",
+          "input_count": "Number of inputs",
+          "area_count": "Number of areas",
+          "relay_count": "Number of relays"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the panel",
+      "invalid_auth": "Invalid credentials or insufficient permissions",
+      "unknown": "Unexpected response from the panel"
+    },
+    "abort": {
+      "already_configured": "This panel is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tecom Discovery entity ranges",
+        "data": {
+          "input_count": "Number of inputs",
+          "area_count": "Number of areas",
+          "relay_count": "Number of relays"
+        }
+      }
+    }
+  }
+}
