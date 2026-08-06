@@ -17,6 +17,12 @@ This first release supports:
 Control commands are deliberately not included until their behavior and
 permissions have been validated on real hardware.
 
+## Releases
+
+- **Beta 02 / 0.1.1:** Correctly map `disarmed` areas before checking armed
+  state names.
+- **Beta 01 / 0.1.0:** Initial read-only release.
+
 ## Installation
 
 ### HACS

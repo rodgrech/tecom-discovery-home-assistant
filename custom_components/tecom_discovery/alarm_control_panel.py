@@ -41,14 +41,14 @@ class DiscoveryArea(DiscoveryEntity, AlarmControlPanelEntity):
         value = state.state.lower()
         if "alarm" in value:
             return AlarmControlPanelState.TRIGGERED
-        if any(word in value for word in ("partial", "stay", "perimeter")):
-            return AlarmControlPanelState.ARMED_HOME
-        if any(word in value for word in ("armed", "secure", "set")):
-            return AlarmControlPanelState.ARMED_AWAY
+        if any(word in value for word in ("disarm", "access", "unset", "normal")):
+            return AlarmControlPanelState.DISARMED
         if "entry_delay" in value:
             return AlarmControlPanelState.PENDING
         if "exit_delay" in value:
             return AlarmControlPanelState.ARMING
-        if any(word in value for word in ("disarm", "access", "unset", "normal")):
-            return AlarmControlPanelState.DISARMED
+        if any(word in value for word in ("partial", "stay", "perimeter")):
+            return AlarmControlPanelState.ARMED_HOME
+        if any(word in value for word in ("armed", "secure", "set")):
+            return AlarmControlPanelState.ARMED_AWAY
         return None
