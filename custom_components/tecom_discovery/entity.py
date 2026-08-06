@@ -10,6 +10,13 @@ from .coordinator import DiscoveryCoordinator
 from .models import DiscoveryEntityState
 
 
+def is_motion_input(entity: DiscoveryEntityState) -> bool:
+    """Return whether an input name identifies a movement detector."""
+
+    name = entity.name.casefold()
+    return any(term in name for term in ("pir", "motion", "movement"))
+
+
 class DiscoveryEntity(CoordinatorEntity[DiscoveryCoordinator]):
     """Base coordinator entity."""
 

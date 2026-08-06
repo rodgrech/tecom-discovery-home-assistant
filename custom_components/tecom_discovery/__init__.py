@@ -17,6 +17,7 @@ from .const import (
     PLATFORMS,
 )
 from .coordinator import DiscoveryCoordinator
+from .entity import is_motion_input
 
 type DiscoveryConfigEntry = ConfigEntry[DiscoveryCoordinator]
 
@@ -63,5 +64,12 @@ def _remove_legacy_input_binary_sensors(
     for number in range(1, input_count + 1):
         unique_id = f"{entry.entry_id}_{KIND_INPUT}_{number}"
         entity_id = registry.async_get_entity_id("binary_sensor", DOMAIN, unique_id)
+        if entity_id is not None:
+            registry.async_remove(entity_id)
+    for item in entry.runtime_data.data.inputs:
+        if not is_motion_input(item):
+            continue
+        unique_id = f"{entry.entry_id}_{KIND_INPUT}_{item.number}"
+        entity_id = registry.async_get_entity_id("sensor", DOMAIN, unique_id)
         if entity_id is not None:
             registry.async_remove(entity_id)

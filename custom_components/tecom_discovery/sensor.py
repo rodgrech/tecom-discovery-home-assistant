@@ -11,7 +11,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import DiscoveryCoordinator
-from .entity import DiscoveryEntity
+from .entity import DiscoveryEntity, is_motion_input
 
 
 async def async_setup_entry(
@@ -25,7 +25,11 @@ async def async_setup_entry(
     async_add_entities(
         [
             DiscoveryPanelInfoSensor(coordinator),
-            *(DiscoveryInputSensor(coordinator, item) for item in coordinator.data.inputs),
+            *(
+                DiscoveryInputSensor(coordinator, item)
+                for item in coordinator.data.inputs
+                if not is_motion_input(item)
+            ),
         ]
     )
 
