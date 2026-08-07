@@ -44,11 +44,17 @@ class DiscoveryInputSensor(DiscoveryEntity, SensorEntity):
         state = self.discovery_state
         if state is None or state.state == "unknown":
             return None
+        if state.state == "short":
+            return "Short (Tamper)"
+        if state.state == "open":
+            return "Open (Tamper)"
         return state.state.replace("_", " ").title()
 
     @property
     def icon(self) -> str:
         state = self.discovery_state
+        if state and state.tamper:
+            return "mdi:shield-alert-outline"
         if state and state.state == "unsealed":
             return "mdi:shield-alert"
         return "mdi:shield-check"

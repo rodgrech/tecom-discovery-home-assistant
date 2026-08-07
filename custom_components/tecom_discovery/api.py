@@ -395,6 +395,14 @@ def _normalized_state(
             return "disarmed", False
 
     state = _state_text(value)
+    if kind == KIND_INPUT:
+        if state == "sealed":
+            return state, False
+        if state == "unsealed":
+            return state, True
+        if state in {"short", "open"}:
+            # A wiring tamper is not movement or an ordinary door/window opening.
+            return state, False
     return state, _state_active(value, state, kind)
 
 
@@ -430,8 +438,12 @@ def _input_tamper(item: dict[str, Any]) -> bool | None:
         }:
             return False
 
-    # Some firmware reports Tamper as the primary alarm status.
+    # Discovery inputs use Short and Open for the two tamper conditions.
     alarm_status = _state_text(_first_value(item, ("alarmStatus",)))
+    if alarm_status in {"short", "open"}:
+        return True
+    if alarm_status in {"sealed", "unsealed"}:
+        return False
     if "tamper" in alarm_status:
         return not any(
             word in alarm_status for word in ("normal", "restore", "sealed", "clear")

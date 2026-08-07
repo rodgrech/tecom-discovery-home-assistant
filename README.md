@@ -10,7 +10,8 @@ This first release supports:
 - Discovery email/password authentication and bearer-token renewal
 - panel firmware/API information
 - PIR/motion inputs as movement binary sensors using `Detected`/`Clear`
-- other input states as sensors using the panel's `Sealed`/`Unsealed`
+- other input states as sensors using `Sealed`, `Unsealed`, `Short (Tamper)`,
+  and `Open (Tamper)`
 - a dedicated tamper binary sensor for every input when tamper data is reported
 - relay states as read-only binary sensors
 - area states as alarm control panels with optional keypad-protected control
@@ -23,6 +24,8 @@ service account and its assigned alarm group.
 
 ## Releases
 
+- **Beta 09 / 0.1.8:** Expose the panel's complete four-state input model:
+  Sealed, Unsealed, Short (Tamper), and Open (Tamper).
 - **Beta 08 / 0.1.7:** Add dedicated input tamper binary sensors without
   replacing each input's configured Sealed/Unsealed or sensor-type state.
 - **Beta 07 / 0.1.6:** Simplify area control to full Arm and Disarm only;

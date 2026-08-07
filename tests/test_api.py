@@ -58,7 +58,7 @@ def test_real_discovery_input_uses_alarm_status() -> None:
     state = normalize_states(response, "input", [1])[0]
     assert state.state == "sealed"
     assert state.active is False
-    assert state.tamper is None
+    assert state.tamper is False
 
 
 def test_discovery_input_tamper_flag() -> None:
@@ -90,6 +90,26 @@ def test_discovery_input_tamper_alarm_status() -> None:
     }
     state = normalize_states(response, "input", [1])[0]
     assert state.tamper is True
+
+
+def test_discovery_input_short_and_open_are_tamper() -> None:
+    for alarm_status in ("Short", "Open"):
+        state = normalize_states(
+            {
+                "data": [
+                    {
+                        "entityNumber": 1,
+                        "entityName": "Front Door",
+                        "alarmStatus": alarm_status,
+                    }
+                ]
+            },
+            "input",
+            [1],
+        )[0]
+        assert state.state == alarm_status.lower()
+        assert state.active is False
+        assert state.tamper is True
 
 
 def test_real_discovery_area_disarmed() -> None:
