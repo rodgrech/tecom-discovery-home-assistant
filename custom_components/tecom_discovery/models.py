@@ -15,6 +15,7 @@ class DiscoveryEntityState:
     kind: str
     state: str
     active: bool | None
+    tamper: bool | None = None
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -26,4 +27,3 @@ class DiscoveryData:
     inputs: list[DiscoveryEntityState]
     areas: list[DiscoveryEntityState]
     relays: list[DiscoveryEntityState]
-

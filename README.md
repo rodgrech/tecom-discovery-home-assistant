@@ -11,7 +11,7 @@ This first release supports:
 - panel firmware/API information
 - PIR/motion inputs as movement binary sensors using `Detected`/`Clear`
 - other input states as sensors using the panel's `Sealed`/`Unsealed`
-  terminology
+- a dedicated tamper binary sensor for every input when tamper data is reported
 - relay states as read-only binary sensors
 - area states as alarm control panels with optional keypad-protected control
 - local polling every 10 seconds
@@ -23,6 +23,8 @@ service account and its assigned alarm group.
 
 ## Releases
 
+- **Beta 08 / 0.1.7:** Add dedicated input tamper binary sensors without
+  replacing each input's configured Sealed/Unsealed or sensor-type state.
 - **Beta 07 / 0.1.6:** Simplify area control to full Arm and Disarm only;
   remove stay/home arming.
 - **Beta 06 / 0.1.5:** Add keypad-protected full-arm, stay-arm, and disarm

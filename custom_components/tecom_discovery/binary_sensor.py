@@ -43,6 +43,10 @@ async def async_setup_entry(
         for item in coordinator.data.inputs
         if configured_input_type(coordinator, item) != INPUT_TYPE_SEALED
     )
+    entities.extend(
+        DiscoveryInputTamperBinarySensor(coordinator, item)
+        for item in coordinator.data.inputs
+    )
     async_add_entities(entities)
 
 
@@ -92,3 +96,26 @@ class DiscoveryInputBinarySensor(DiscoveryEntity, BinarySensorEntity):
     def is_on(self) -> bool | None:
         state = self.discovery_state
         return state.active if state else None
+
+
+class DiscoveryInputTamperBinarySensor(DiscoveryEntity, BinarySensorEntity):
+    """A dedicated tamper condition for a Discovery input."""
+
+    _attr_device_class = BinarySensorDeviceClass.TAMPER
+
+    def __init__(self, coordinator: DiscoveryCoordinator, entity) -> None:
+        super().__init__(coordinator, entity)
+        self._attr_unique_id = (
+            f"{coordinator.entry.entry_id}_{KIND_INPUT}_tamper_{entity.number}"
+        )
+        self._attr_name = f"{entity.name} tamper"
+
+    @property
+    def is_on(self) -> bool | None:
+        state = self.discovery_state
+        return state.tamper if state else None
+
+    @property
+    def available(self) -> bool:
+        state = self.discovery_state
+        return super().available and state is not None and state.tamper is not None

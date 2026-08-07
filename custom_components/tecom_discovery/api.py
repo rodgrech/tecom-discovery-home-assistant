@@ -243,6 +243,7 @@ def normalize_states(
             ),
         )
         state, active = _normalized_state(item, state_value, kind)
+        tamper = _input_tamper(item) if kind == KIND_INPUT else None
         result.append(
             DiscoveryEntityState(
                 number=number,
@@ -250,6 +251,7 @@ def normalize_states(
                 kind=kind,
                 state=state,
                 active=active,
+                tamper=tamper,
                 raw=item,
             )
         )
@@ -394,6 +396,47 @@ def _normalized_state(
 
     state = _state_text(value)
     return state, _state_active(value, state, kind)
+
+
+def _input_tamper(item: dict[str, Any]) -> bool | None:
+    """Extract an input tamper condition without conflating it with unsealed."""
+
+    value = _first_value(
+        item,
+        (
+            "tamper",
+            "isTamper",
+            "tamperActive",
+            "inputTamper",
+            "tamperStatus",
+        ),
+    )
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    if value is not None:
+        state = _state_text(value)
+        if state in {"tamper", "active", "open", "unsealed", "on", "1", "true"}:
+            return True
+        if state in {
+            "normal",
+            "inactive",
+            "closed",
+            "sealed",
+            "off",
+            "0",
+            "false",
+        }:
+            return False
+
+    # Some firmware reports Tamper as the primary alarm status.
+    alarm_status = _state_text(_first_value(item, ("alarmStatus",)))
+    if "tamper" in alarm_status:
+        return not any(
+            word in alarm_status for word in ("normal", "restore", "sealed", "clear")
+        )
+    return None
 
 
 def _chunks(values: Iterable[int], size: int) -> Iterable[list[int]]:
