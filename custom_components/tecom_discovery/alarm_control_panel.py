@@ -52,10 +52,7 @@ class DiscoveryArea(DiscoveryEntity, AlarmControlPanelEntity):
     def supported_features(self) -> AlarmControlPanelEntityFeature:
         if not self.coordinator.entry.options.get(CONF_CONTROL_CODE):
             return AlarmControlPanelEntityFeature(0)
-        return (
-            AlarmControlPanelEntityFeature.ARM_AWAY
-            | AlarmControlPanelEntityFeature.ARM_HOME
-        )
+        return AlarmControlPanelEntityFeature.ARM_AWAY
 
     @property
     def alarm_state(self) -> AlarmControlPanelState | None:
@@ -81,11 +78,6 @@ class DiscoveryArea(DiscoveryEntity, AlarmControlPanelEntity):
         """Fully arm this Discovery area."""
 
         await self._async_set_area_action(2, code)
-
-    async def async_alarm_arm_home(self, code: str | None = None) -> None:
-        """Stay-arm this Discovery area."""
-
-        await self._async_set_area_action(1, code)
 
     async def async_alarm_disarm(self, code: str | None = None) -> None:
         """Disarm this Discovery area."""

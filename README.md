@@ -16,12 +16,15 @@ This first release supports:
 - area states as alarm control panels with optional keypad-protected control
 - local polling every 10 seconds
 
-Area arm/disarm commands require a Home Assistant keypad code configured in
-the integration options. The Discovery panel authorizes the underlying command
-through the dedicated service account and its assigned alarm group.
+Area control is deliberately limited to full **Arm** and **Disarm** and
+requires a Home Assistant keypad code configured in the integration options.
+The Discovery panel authorizes the underlying command through the dedicated
+service account and its assigned alarm group.
 
 ## Releases
 
+- **Beta 07 / 0.1.6:** Simplify area control to full Arm and Disarm only;
+  remove stay/home arming.
 - **Beta 06 / 0.1.5:** Add keypad-protected full-arm, stay-arm, and disarm
   controls using the Discovery panel's native area action API.
 - **Beta 05 / 0.1.4:** Add an input configuration wizard for selecting each
